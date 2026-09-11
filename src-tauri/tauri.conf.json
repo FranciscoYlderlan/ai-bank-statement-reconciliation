@@ -1,0 +1,33 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Conciliador de Extratos",
+  "version": "1.0.0",
+  "identifier": "com.bomprato.conciliador",
+  "build": {
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:1420",
+    "beforeDevCommand": "npm run dev",
+    "beforeBuildCommand": "npm run build"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "title": "Conciliador de Extratos",
+        "width": 1180,
+        "height": 820,
+        "minWidth": 900,
+        "minHeight": 640
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; connect-src 'self' https://sheets.googleapis.com https://www.googleapis.com https://cdnjs.cloudflare.com; img-src 'self' data:; style-src 'self' 'unsafe-inline'"
+    }
+  },
+  "plugins": {},
+  "bundle": {
+    "active": true,
+    "targets": ["msi", "nsis"],
+    "icon": ["icons/icon.ico"]
+  }
+}
