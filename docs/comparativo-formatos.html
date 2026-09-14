@@ -1,0 +1,686 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Public+Sans:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<title>Quatro Formatos, Um Extrato</title>
+<style>
+  /* ──────────────────────────────────────────────────────────────────────
+     Direção "Verde-cofre / Livro-caixa" — os tokens são os mesmos de
+     docs/DESIGN.md e tailwind.config.js do Conciliador. A paleta é clara
+     por decisão do produto (app financeiro desktop, sem dark mode); por
+     isso tudo aqui pinta fundo e cor explicitamente, para a página se
+     sustentar sobre qualquer ground do visualizador.
+     ────────────────────────────────────────────────────────────────────── */
+  :root {
+    --bg: #F4F6F8;
+    --surface: #FFFFFF;
+    --surface-muted: #EAEEF2;
+    --ink: #1B2A33;
+    --ink-soft: #5A6B75;
+    --line: #D8E0E6;
+    --cofre: #0E7C66;
+    --cofre-strong: #0B6353;
+    --cofre-soft: #E6F1EE;
+    --entrada: #1E9E6A;
+    --entrada-soft: #E6F4EC;
+    --saida: #C0392B;
+    --saida-soft: #FBEBE8;
+    --amber: #8A6212;
+    --amber-soft: #FAF0DC;
+
+    --display: "Space Grotesk", system-ui, sans-serif;
+    --body: "Public Sans", system-ui, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, monospace;
+
+    --shadow-card: 0 1px 2px rgba(27, 42, 51, .06), 0 1px 3px rgba(27, 42, 51, .05);
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding-inline: 20px;
+    padding-block: 48px 72px;
+  }
+
+  /* ── a fita de competência: a etiqueta do mês, com o ponto cofre ────── */
+  .fita {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--display);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--cofre-strong);
+    background: var(--cofre-soft);
+    border-radius: 999px;
+    padding: 5px 12px 5px 9px;
+  }
+  .fita::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: var(--cofre);
+  }
+
+  h1 {
+    font-family: var(--display);
+    font-size: clamp(30px, 5vw, 44px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -.02em;
+    margin: 18px 0 0;
+    text-wrap: balance;
+  }
+
+  .lede {
+    max-width: 62ch;
+    margin-top: 14px;
+    font-size: 17px;
+    color: var(--ink-soft);
+  }
+  .lede strong { color: var(--ink); font-weight: 600; }
+
+  /* ── a linha de conciliação: régua dupla sob o título de seção ──────── */
+  section { margin-top: 56px; }
+  h2 {
+    font-family: var(--display);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -.01em;
+    margin: 0 0 4px;
+  }
+  .regua {
+    height: 3px;
+    background:
+      linear-gradient(var(--cofre), var(--cofre)) top left / 100% 2px no-repeat,
+      linear-gradient(var(--line), var(--line)) bottom left / 100% 1px no-repeat;
+    margin-bottom: 22px;
+  }
+  .sub { max-width: 68ch; color: var(--ink-soft); margin: 0 0 22px; }
+  .sub + .regua { margin-top: -10px; }
+
+  /* ── veredito por formato, em faixa ─────────────────────────────────── */
+  .veredito {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .veredito > div { background: var(--surface); padding: 16px 18px; }
+  .veredito .fmt {
+    font-family: var(--display);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .veredito .num {
+    font-family: var(--mono);
+    font-size: 26px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    margin-top: 2px;
+    line-height: 1.15;
+  }
+  .veredito .nota { font-size: 13px; color: var(--ink-soft); margin-top: 4px; }
+
+  /* ── selo de confiança ──────────────────────────────────────────────── */
+  .selo {
+    display: inline-block;
+    font-family: var(--display);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    border-radius: 999px;
+    padding: 3px 9px;
+    white-space: nowrap;
+  }
+  .selo-prova { background: var(--cofre-soft); color: var(--cofre-strong); }
+  .selo-ia { background: var(--amber-soft); color: var(--amber); }
+
+  /* ── a tabela, tratada como livro-caixa ─────────────────────────────── */
+  .tabela-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--surface);
+    box-shadow: var(--shadow-card);
+  }
+  table { border-collapse: collapse; width: 100%; min-width: 720px; }
+  caption {
+    caption-side: bottom;
+    text-align: left;
+    font-size: 13px;
+    color: var(--ink-soft);
+    padding: 12px 18px 14px;
+    border-top: 1px solid var(--line);
+  }
+  th, td { text-align: left; padding: 12px 18px; vertical-align: top; }
+  thead th {
+    background: var(--surface-muted);
+    font-family: var(--display);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    border-bottom: 2px solid var(--cofre);
+    white-space: nowrap;
+  }
+  tbody tr + tr td { border-top: 1px solid var(--line); }
+  tbody th {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 15px;
+    white-space: nowrap;
+  }
+  tbody tr + tr th { border-top: 1px solid var(--line); }
+  .n {
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+  .n-forte { font-weight: 600; }
+  .zero { color: var(--entrada); font-weight: 600; }
+  .cell-note { display: block; font-size: 12.5px; color: var(--ink-soft); margin-top: 2px; white-space: normal; }
+  tr.destaque { background: var(--cofre-soft); }
+  tr.atencao td, tr.atencao th { background: var(--amber-soft); }
+
+  /* ── blocos de prova ────────────────────────────────────────────────── */
+  .provas { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .prova {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--cofre);
+    border-radius: 10px;
+    padding: 18px 20px;
+  }
+  .prova.sem { border-left-color: var(--amber); }
+  .prova h3 {
+    font-family: var(--display);
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0 0 2px;
+  }
+  .prova .quem { font-size: 12.5px; color: var(--ink-soft); margin: 0 0 10px; font-family: var(--mono); }
+  .prova p { margin: 0 0 10px; font-size: 14px; }
+  .prova p:last-child { margin-bottom: 0; }
+  .formula {
+    font-family: var(--mono);
+    font-size: 13px;
+    background: var(--surface-muted);
+    border-radius: 6px;
+    padding: 8px 10px;
+    display: block;
+    margin: 0 0 10px;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  /* ── o diagrama da corrente ─────────────────────────────────────────── */
+  .diagrama {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 20px 18px 8px;
+    overflow-x: auto;
+  }
+  .diagrama svg { display: block; min-width: 640px; max-width: 100%; height: auto; margin: 0 auto; }
+  .legenda { font-size: 13px; color: var(--ink-soft); margin: 10px 4px 12px; max-width: 66ch; }
+
+  /* ── painel de decisão ──────────────────────────────────────────────── */
+  .decisao {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: var(--shadow-card);
+    padding: 4px 0;
+  }
+  .passo { display: grid; grid-template-columns: 44px 1fr; gap: 14px; padding: 16px 20px; }
+  .passo + .passo { border-top: 1px solid var(--line); }
+  .passo .marca {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--cofre-strong);
+    background: var(--cofre-soft);
+    border-radius: 6px;
+    height: 26px;
+    display: grid;
+    place-items: center;
+  }
+  .passo h3 { font-family: var(--display); font-size: 15px; margin: 2px 0 3px; }
+  .passo p { margin: 0; font-size: 14px; color: var(--ink-soft); }
+  .passo p strong { color: var(--ink); font-weight: 600; }
+
+  /* ── recomendação ───────────────────────────────────────────────────── */
+  .recomendacao {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--cofre);
+    border-radius: 10px;
+    padding: 24px 26px;
+    box-shadow: var(--shadow-card);
+  }
+  .recomendacao h2 { margin-bottom: 10px; }
+  .recomendacao ul { margin: 0; padding-left: 20px; }
+  .recomendacao li { margin-bottom: 10px; }
+  .recomendacao li:last-child { margin-bottom: 0; }
+  .recomendacao li strong { font-weight: 600; }
+
+  .alerta {
+    margin-top: 18px;
+    background: var(--saida-soft);
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: 14px;
+  }
+  .alerta b { color: var(--saida); }
+
+  footer {
+    margin-top: 56px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  footer code {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    background: var(--surface-muted);
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+  footer p { margin: 0 0 8px; max-width: 74ch; }
+
+  @media (max-width: 560px) {
+    .page { padding-block: 32px 56px; }
+    th, td { padding: 10px 14px; }
+  }
+</style>
+
+<div class="page">
+
+  <header>
+    <span class="fita">Maio – Agosto 2026 · Stone · conta 89295268-0</span>
+    <h1>Quatro formatos, um extrato</h1>
+    <p class="lede">
+      O banco entrega o mesmo mês em <strong>CSV, XLS, OFX e PDF</strong>. Eles não são
+      equivalentes: mudam a contagem de lançamentos, o tratamento da tarifa e — o que mais
+      importa — se a leitura pode ser <strong>provada</strong> ou apenas estimada. Esta página
+      mede os quatro sobre os arquivos reais do cliente e diz por qual importar.
+    </p>
+  </header>
+
+  <section aria-labelledby="resultado">
+    <h2 id="resultado">O resultado, em uma linha cada</h2>
+    <div class="regua"></div>
+    <div class="veredito">
+      <div>
+        <div class="fmt">CSV</div>
+        <div class="num">1.290</div>
+        <div class="nota">lançamentos · leitura provada, zero chamadas de IA</div>
+      </div>
+      <div>
+        <div class="fmt">XLS</div>
+        <div class="num">1.290</div>
+        <div class="nota">idêntico ao CSV, lançamento a lançamento</div>
+      </div>
+      <div>
+        <div class="fmt">OFX</div>
+        <div class="num">1.115</div>
+        <div class="nota">provado, mas sem as 175 tarifas — elas vêm embutidas</div>
+      </div>
+      <div>
+        <div class="fmt">PDF</div>
+        <div class="num">— </div>
+        <div class="nota">só agosto, e ainda por IA: resultado varia a cada execução</div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="tabela">
+    <h2 id="tabela">A comparação medida</h2>
+    <p class="sub">
+      Os três primeiros arquivos cobrem 09/05 a 31/08/2026 e trazem as mesmas 1.115 linhas. O PDF
+      cobre <em>só agosto</em> — ele está na tabela seguinte, onde a comparação é justa.
+    </p>
+    <div class="regua"></div>
+    <div class="tabela-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Formato</th>
+            <th scope="col">Linhas</th>
+            <th scope="col">Lançamentos</th>
+            <th scope="col">Tarifa</th>
+            <th scope="col">Prova da leitura</th>
+            <th scope="col">Chamadas de IA</th>
+            <th scope="col">Tempo</th>
+            <th scope="col">Confiança</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="destaque">
+            <th scope="row">CSV<span class="cell-note">321 KB</span></th>
+            <td class="n">1.115</td>
+            <td class="n n-forte">1.290<span class="cell-note">1.115 + 175 tarifas</span></td>
+            <td>linha própria<span class="cell-note">como no PDF</span></td>
+            <td class="n">1.115 conferidas<span class="cell-note">1.114 elos, <span class="zero">0</span> divergências</span></td>
+            <td class="n zero">0</td>
+            <td class="n">45 ms</td>
+            <td><span class="selo selo-prova">provada</span></td>
+          </tr>
+          <tr class="destaque">
+            <th scope="row">XLS<span class="cell-note">117 KB · é xlsx</span></th>
+            <td class="n">1.115</td>
+            <td class="n n-forte">1.290<span class="cell-note">1.115 + 175 tarifas</span></td>
+            <td>linha própria</td>
+            <td class="n">1.115 conferidas<span class="cell-note">1.114 elos, <span class="zero">0</span> divergências</span></td>
+            <td class="n zero">0</td>
+            <td class="n">102 ms</td>
+            <td><span class="selo selo-prova">provada</span></td>
+          </tr>
+          <tr>
+            <th scope="row">OFX<span class="cell-note">287 KB</span></th>
+            <td class="n">1.115</td>
+            <td class="n n-forte">1.115</td>
+            <td>embutida no valor<span class="cell-note">R$ 25,00 → R$ 24,76</span></td>
+            <td class="n">1.115 de 1.115<span class="cell-note">nada sobrou na lista</span></td>
+            <td class="n zero">0</td>
+            <td class="n">15 ms</td>
+            <td><span class="selo selo-prova">provada</span></td>
+          </tr>
+          <tr class="atencao">
+            <th scope="row">PDF<span class="cell-note">1,2 MB · 20 págs</span></th>
+            <td class="n">só agosto</td>
+            <td class="n">varia</td>
+            <td>linha própria</td>
+            <td>nenhuma<span class="cell-note">layout Stone não tem parser direto</span></td>
+            <td class="n n-forte">~21</td>
+            <td class="n">~1 min</td>
+            <td><span class="selo selo-ia">por IA</span></td>
+          </tr>
+        </tbody>
+        <caption>
+          Medido em 11/09/2026 sobre os arquivos do cliente, com a conferência por IA desligada.
+          Tempo é só da leitura do arquivo, na máquina de desenvolvimento.
+        </caption>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="agosto">
+    <h2 id="agosto">O mesmo agosto, lido por dois caminhos independentes</h2>
+    <p class="sub">
+      Este é o teste que vale mais que qualquer contagem isolada. O recorte de agosto do CSV e o
+      PDF de agosto são arquivos diferentes, gerados por exportadores diferentes, lidos por
+      métodos diferentes — e chegam ao mesmo número.
+    </p>
+    <div class="regua"></div>
+    <div class="tabela-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Origem</th>
+            <th scope="col">Método de leitura</th>
+            <th scope="col">Lançamentos em agosto</th>
+            <th scope="col">Tarifas</th>
+            <th scope="col">Conferência</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">CSV / XLS</th>
+            <td>parser determinístico, em produção</td>
+            <td class="n n-forte">315</td>
+            <td class="n">38</td>
+            <td class="n">277 linhas, <span class="zero">0</span> divergências</td>
+          </tr>
+          <tr>
+            <th scope="row">PDF</th>
+            <td>parser determinístico, <em>em protótipo</em></td>
+            <td class="n n-forte">315</td>
+            <td class="n">38</td>
+            <td class="n">277 grupos de saldo, <span class="zero">0</span> rupturas</td>
+          </tr>
+        </tbody>
+        <caption>
+          O parser determinístico de PDF <strong>ainda não está no produto</strong> — hoje o PDF vai
+          para a IA. O número acima vem de um protótipo que lê as colunas por posição no texto do
+          pdf.js, com zero linhas não interpretadas. É evidência de que vale implementá-lo, não uma
+          funcionalidade entregue.
+        </caption>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="provas">
+    <h2 id="provas">Como cada formato se prova</h2>
+    <p class="sub">
+      Leitura direta só é aceita quando o próprio arquivo traz como conferi-la. Cada formato traz
+      uma prova diferente — e a do PDF da Stone, hoje, não existe.
+    </p>
+    <div class="regua"></div>
+    <div class="provas">
+      <div class="prova">
+        <h3>CSV e planilha</h3>
+        <p class="quem">tabular-saldo</p>
+        <span class="formula">saldo antes + valor − tarifa = saldo depois</span>
+        <p>
+          Cada linha fecha a própria conta, e o <em>saldo depois</em> de uma linha é o
+          <em>saldo antes</em> da vizinha, do começo ao fim do arquivo. A primeira prova pega valor,
+          sinal e tarifa errados; a segunda pega o que nenhuma aritmética de linha pegaria —
+          <strong>uma linha pulada</strong>, que abre um buraco na corrente.
+        </p>
+        <p>
+          É a prova mais forte das três: cobre inclusive o primeiro lançamento do arquivo.
+        </p>
+      </div>
+      <div class="prova">
+        <h3>OFX</h3>
+        <p class="quem">ofx</p>
+        <span class="formula">&lt;STMTTRN&gt; declarados = lançamentos lidos</span>
+        <p>
+          O OFX não traz saldo por lançamento, então não há corrente para fechar. Mas ele é um
+          formato de troca entre sistemas: cada lançamento é um registro delimitado, e isso permite
+          <strong>contar</strong>. Todo bloco declarado tem de virar lançamento, nada pode sobrar
+          na lista e nenhuma data pode cair fora do período do próprio arquivo.
+        </p>
+        <p>Prova estrutural, não aritmética — e a página diz isso, em vez de fingir que é a mesma coisa.</p>
+      </div>
+      <div class="prova sem">
+        <h3>PDF da Stone</h3>
+        <p class="quem">— sem parser direto</p>
+        <p>
+          A IA transcreve <strong>página por página</strong>: 20 páginas, 20 chamadas, e cada uma é
+          uma chance de o modelo pular uma linha. As redes de segurança do pipeline pegam
+          lançamento <em>a mais</em>; lançamento <em>a menos</em> é exatamente o que elas não
+          alcançam — e foi essa a queixa que chegou do cliente.
+        </p>
+        <p>
+          O PDF do PagBank tem parser direto desde a fase anterior, conferido pelas linhas
+          <em>Saldo do dia</em>. O da Stone ainda não.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="corrente">
+    <h2 id="corrente">A corrente de saldos, que é o que prova a leitura</h2>
+    <div class="regua"></div>
+    <div class="diagrama">
+      <svg viewBox="0 0 660 196" role="img" aria-labelledby="corrente-titulo corrente-desc">
+        <title id="corrente-titulo">Encadeamento dos saldos entre linhas consecutivas do extrato</title>
+        <desc id="corrente-desc">
+          Três linhas do extrato em sequência, da mais recente para a mais antiga. Em cada uma,
+          saldo antes mais o valor, menos a tarifa, resulta no saldo depois; e o saldo antes de uma
+          linha é o saldo depois da linha seguinte, formando uma corrente sem buraco. Se uma linha
+          for pulada, a corrente se rompe e a leitura direta é recusada.
+        </desc>
+
+        <!-- linha 1 -->
+        <rect x="8" y="12" width="196" height="66" rx="8" fill="#FFFFFF" stroke="#D8E0E6"></rect>
+        <text x="20" y="31" font-family="Public Sans, sans-serif" font-size="11" fill="#5A6B75">31/08 · Pix recebido</text>
+        <text x="20" y="50" font-family="IBM Plex Mono, monospace" font-size="13" fill="#1B2A33">709,04 + 161,00</text>
+        <text x="20" y="68" font-family="IBM Plex Mono, monospace" font-size="13" font-weight="600" fill="#0E7C66">= 870,04</text>
+
+        <!-- linha 2 -->
+        <rect x="232" y="12" width="196" height="66" rx="8" fill="#FFFFFF" stroke="#D8E0E6"></rect>
+        <text x="244" y="31" font-family="Public Sans, sans-serif" font-size="11" fill="#5A6B75">31/08 · Pix enviado</text>
+        <text x="244" y="50" font-family="IBM Plex Mono, monospace" font-size="13" fill="#1B2A33">803,04 − 94,00</text>
+        <text x="244" y="68" font-family="IBM Plex Mono, monospace" font-size="13" font-weight="600" fill="#0E7C66">= 709,04</text>
+
+        <!-- linha 3, com tarifa -->
+        <rect x="456" y="12" width="196" height="66" rx="8" fill="#FFFFFF" stroke="#D8E0E6"></rect>
+        <text x="468" y="31" font-family="Public Sans, sans-serif" font-size="11" fill="#5A6B75">30/08 · Maquininha</text>
+        <text x="468" y="50" font-family="IBM Plex Mono, monospace" font-size="13" fill="#1B2A33">751,15 + 25,00 − 0,24</text>
+        <text x="468" y="68" font-family="IBM Plex Mono, monospace" font-size="13" font-weight="600" fill="#0E7C66">= 775,91</text>
+
+        <!-- setas da corrente: o "antes" de uma e o "depois" da outra -->
+        <path d="M232 98 L232 88 L204 88" fill="none" stroke="#0E7C66" stroke-width="1.5"></path>
+        <path d="M204 88 l7 -4.5 v9 z" fill="#0E7C66"></path>
+        <path d="M456 98 L456 88 L428 88" fill="none" stroke="#0E7C66" stroke-width="1.5"></path>
+        <path d="M428 88 l7 -4.5 v9 z" fill="#0E7C66"></path>
+
+        <text x="238" y="115" font-family="Public Sans, sans-serif" font-size="11.5" fill="#0E7C66">
+          o “antes” daqui é o “depois” da anterior
+        </text>
+        <text x="462" y="115" font-family="Public Sans, sans-serif" font-size="11.5" fill="#0E7C66">
+          idem — e a tarifa entra na conta
+        </text>
+
+        <!-- a ruptura -->
+        <rect x="8" y="136" width="644" height="50" rx="8" fill="#FBEBE8" stroke="#F0CFC9"></rect>
+        <text x="24" y="158" font-family="Public Sans, sans-serif" font-size="12" font-weight="600" fill="#C0392B">
+          Se uma linha for pulada na leitura
+        </text>
+        <text x="24" y="175" font-family="Public Sans, sans-serif" font-size="12" fill="#1B2A33">
+          o elo não encontra o vizinho, a corrente se rompe, e a leitura direta inteira é recusada — a IA assume o arquivo.
+        </text>
+      </svg>
+    </div>
+    <p class="legenda">
+      Esse encadeamento é o motivo de o número 1.290 poder ser afirmado, e não estimado: as 1.114
+      ligações entre as 1.115 linhas fecharam todas. Um extrato de quatro meses que começa em
+      R$ 0,00 e termina em R$ 870,04 — e a soma líquida de tudo o que foi lido dá exatamente
+      R$ 870,04.
+    </p>
+  </section>
+
+  <section aria-labelledby="arbitragem">
+    <h2 id="arbitragem">A IA agora confere, em vez de competir</h2>
+    <p class="sub">
+      As duas leituras passaram a rodar juntas. A determinística lê e prova; a IA relê e serve de
+      testemunha independente. A ordem de decisão é fixa e não depende de qual trouxe mais linhas.
+    </p>
+    <div class="regua"></div>
+    <div class="decisao">
+      <div class="passo">
+        <div class="marca">1</div>
+        <div>
+          <h3>A prova vence</h3>
+          <p>
+            Leitura determinística que fechou a própria conferência é <strong>verificável</strong> —
+            qualquer pessoa refaz a aritmética e chega ao mesmo lugar. A da IA é plausível, e
+            plausível não se audita. Se a IA trouxer mais lançamentos, isso vira
+            <strong>divergência a exibir</strong>, nunca correção aplicada em silêncio: um
+            lançamento a mais num fluxo de caixa é dinheiro que nunca existiu.
+          </p>
+        </div>
+      </div>
+      <div class="passo">
+        <div class="marca">2</div>
+        <div>
+          <h3>Sem prova, a IA assume</h3>
+          <p>
+            Conferência que não fecha, linha ilegível, formato sem parser — a leitura por IA passa a
+            ser <em>a</em> leitura, sobre o arquivo inteiro. É o que acontece hoje com o PDF da Stone.
+          </p>
+        </div>
+      </div>
+      <div class="passo">
+        <div class="marca">3</div>
+        <div>
+          <h3>A conferência custa um valor fixo</h3>
+          <p>
+            Quando a prova já fechou, mandar a IA reler 20 páginas é pagar caro por uma segunda
+            opinião sobre algo demonstrado. Ela lê uma <strong>amostra de 3 blocos</strong> — começo,
+            meio e fim —, e o custo não cresce com o tamanho do extrato. O cruzamento vale para a
+            janela amostrada, e o relatório diz qual é.
+          </p>
+        </div>
+      </div>
+      <div class="passo">
+        <div class="marca">4</div>
+        <div>
+          <h3>Duas vias concordando é o selo mais alto</h3>
+          <p>
+            Leitura provada que a testemunha confirma sobe de <strong>provada</strong> para
+            <strong>corroborada</strong>. A comparação ignora a descrição de propósito — o nome volta
+            escrito diferente de uma leitura para outra — e usa data, valor ao centavo e direção,
+            a mesma identidade do dedup.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="recomendacao">
+    <div class="recomendacao">
+      <h2 id="recomendacao">Por qual formato importar</h2>
+      <div class="regua"></div>
+      <ul>
+        <li>
+          <strong>CSV ou XLS.</strong> São o mesmo resultado — conferi lançamento a lançamento,
+          inclusive as descrições — e trazem a prova mais forte, além das 175 tarifas como
+          lançamento próprio, que é o que faz elas caírem em <em>Taxa de cartão</em>.
+        </li>
+        <li>
+          <strong>OFX serve, com uma perda conhecida.</strong> A leitura é provada e instantânea,
+          mas a tarifa vem embutida no valor da venda: 1.115 lançamentos em vez de 1.290, e a
+          despesa de tarifa desaparece do fluxo de caixa.
+        </li>
+        <li>
+          <strong>PDF, por enquanto, é o pior dos quatro</strong> — e é justamente o que o cliente
+          estava usando quando relatou que registros foram ignorados. Enquanto o parser direto não
+          entrar, use o CSV do mesmo mês.
+        </li>
+      </ul>
+      <div class="alerta">
+        <b>Não misture formatos no mesmo mês.</b> Importar agosto pelo CSV e depois pelo OFX gera
+        duplicata: R$ 25,00 e R$ 24,76 são valores diferentes, e o dedup casa por data, valor e
+        direção. Escolha um formato por competência e mantenha.
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>
+      <strong>Como reproduzir.</strong> Os números vieram dos arquivos reais do cliente, lidos pelo
+      roteador do próprio aplicativo (<code>HybridStatementParser</code>) com a conferência por IA
+      desligada, em 11/09/2026. A suíte determinística cobre o mesmo comportamento sobre fixtures
+      anonimizadas: <code>npm test</code>.
+    </p>
+    <p>
+      Conciliador Automático de Extratos Bancários · direção visual “Verde-cofre / Livro-caixa”
+      (<code>docs/DESIGN.md</code>).
+    </p>
+  </footer>
+
+</div>
