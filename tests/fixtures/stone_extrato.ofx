@@ -1,0 +1,164 @@
+OFXHEADER:100
+DATA:OFXSGML
+VERSION:102
+SECURITY:NONE
+ENCODING:USASCII
+CHARSET:1252
+COMPRESSION:NONE
+OLDFILEUID:NONE
+NEWFILEUID:NONE
+
+<OFX>
+	<SIGNONMSGSRSV1>
+		<SONRS>
+			<STATUS>
+				<CODE>0</CODE>
+				<SEVERITY>INFO</SEVERITY>
+			</STATUS>
+			<DTSERVER>20260909121623[0:GMT]
+			<LANGUAGE>POR</LANGUAGE>
+			<FI>
+				<ORG>Stone Instituição de Pagamento S.A.</ORG>
+				<FID>197</FID>
+			</FI>
+		</SONRS>
+	</SIGNONMSGSRSV1>
+	<BANKMSGSRSV1>
+		<STMTTRNRS>
+			<TRNUID>1</TRNUID>
+			<STATUS>
+				<CODE>0</CODE>
+				<SEVERITY>INFO</SEVERITY>
+			</STATUS>
+			<STMTRS>
+				<CURDEF>BRL</CURDEF>
+				<BANKACCTFROM>
+					<BANKID>0197</BANKID>
+					<BRANCHID>1</BRANCHID>
+					<ACCTID>11223344-5</ACCTID>
+					<ACCTTYPE>CHECKING</ACCTTYPE>
+				</BANKACCTFROM>
+				<BANKTRANLIST>
+					<DTSTART>20260801000000[-3:BRT]</DTSTART>
+					<DTEND>20260831000000[-3:BRT]</DTEND>
+					<STMTTRN>
+						<TRNTYPE>CREDIT</TRNTYPE>
+						<DTPOSTED>20260831200200</DTPOSTED>
+						<TRNAMT>161.00</TRNAMT>
+						<FITID>fit-0000</FITID>
+						<MEMO>ACAI DO LARGO - Transferência | Pix</MEMO>
+					</STMTTRN>
+					<STMTTRN>
+						<TRNTYPE>DEBIT</TRNTYPE>
+						<DTPOSTED>20260831144100</DTPOSTED>
+						<TRNAMT>-94.00</TRNAMT>
+						<FITID>fit-0001</FITID>
+						<MEMO>Ana Paula Ribeiro - Transferência | Pix</MEMO>
+					</STMTTRN>
+					<STMTTRN>
+						<TRNTYPE>CREDIT</TRNTYPE>
+						<DTPOSTED>20260831130100</DTPOSTED>
+						<TRNAMT>60.00</TRNAMT>
+						<FITID>fit-0002</FITID>
+						<MEMO>Sofia Menezes Braga - Transferência | Pix</MEMO>
+					</STMTTRN>
+					<STMTTRN>
+						<TRNTYPE>CREDIT</TRNTYPE>
+						<DTPOSTED>20260831120300</DTPOSTED>
+						<TRNAMT>35.00</TRNAMT>
+						<FITID>fit-0003</FITID>
+						<MEMO>Clara Nogueira Pinto - Transferência | Pix</MEMO>
+					</STMTTRN>
+					<STMTTRN>
+						<TRNTYPE>CREDIT</TRNTYPE>
+						<DTPOSTED>20260831112500</DTPOSTED>
+						<TRNAMT>25.00</TRNAMT>
+						<FITID>fit-0004</FITID>
+						<MEMO>MARCOS VINICIUS SALES - Transferência | Pix</MEMO>
+					</STMTTRN>
+					<STMTTRN>
+						<TRNTYPE>CREDIT</TRNTYPE>
+						<DTPOSTED>20260831080700</DTPOSTED>
+						<TRNAMT>33.96</TRNAMT>
+						<FITID>fit-0005</FITID>
+						<MEMO>Recebimento vendas - Maestro | Débito</MEMO>
+					</STMTTRN>
+					<STMTTRN>
+						<TRNTYPE>CREDIT</TRNTYPE>
+						<DTPOSTED>20260831040400</DTPOSTED>
+						<TRNAMT>73.17</TRNAMT>
+						<FITID>fit-0006</FITID>
+						<MEMO>Recebimento vendas - Antecipação | Crédito</MEMO>
+					</STMTTRN>
+					<STMTTRN>
+						<TRNTYPE>DEBIT</TRNTYPE>
+						<DTPOSTED>20260830144100</DTPOSTED>
+						<TRNAMT>-200.00</TRNAMT>
+						<FITID>fit-0007</FITID>
+						<MEMO>Helena Ferraz Duarte - Transferência | Pix</MEMO>
+					</STMTTRN>
+					<STMTTRN>
+						<TRNTYPE>CREDIT</TRNTYPE>
+						<DTPOSTED>20260830125900</DTPOSTED>
+						<TRNAMT>24.76</TRNAMT>
+						<FITID>fit-0008</FITID>
+						<MEMO>Bruno Tavares Lima - Pix | Maquininha</MEMO>
+					</STMTTRN>
+					<STMTTRN>
+						<TRNTYPE>CREDIT</TRNTYPE>
+						<DTPOSTED>20260830115600</DTPOSTED>
+						<TRNAMT>32.00</TRNAMT>
+						<FITID>fit-0009</FITID>
+						<MEMO>Diego Nunes Peixoto - Transferência | Pix</MEMO>
+					</STMTTRN>
+					<STMTTRN>
+						<TRNTYPE>DEBIT</TRNTYPE>
+						<DTPOSTED>20260830113900</DTPOSTED>
+						<TRNAMT>-25.00</TRNAMT>
+						<FITID>fit-0010</FITID>
+						<MEMO>R M COMERCIO DE ALIMENTOS - Transferência | Pix</MEMO>
+					</STMTTRN>
+					<STMTTRN>
+						<TRNTYPE>CREDIT</TRNTYPE>
+						<DTPOSTED>20260830111700</DTPOSTED>
+						<TRNAMT>35.00</TRNAMT>
+						<FITID>fit-0011</FITID>
+						<MEMO>Luiza Campos Andrade - Transferência | Pix</MEMO>
+					</STMTTRN>
+					<STMTTRN>
+						<TRNTYPE>DEBIT</TRNTYPE>
+						<DTPOSTED>20260829204300</DTPOSTED>
+						<TRNAMT>-50.00</TRNAMT>
+						<FITID>fit-0012</FITID>
+						<MEMO>Helena Ferraz Duarte - Transferência | Pix</MEMO>
+					</STMTTRN>
+					<STMTTRN>
+						<TRNTYPE>CREDIT</TRNTYPE>
+						<DTPOSTED>20260829184000</DTPOSTED>
+						<TRNAMT>100.00</TRNAMT>
+						<FITID>fit-0013</FITID>
+						<MEMO>Rafael Moura Bastos - Transferência | Pix</MEMO>
+					</STMTTRN>
+					<STMTTRN>
+						<TRNTYPE>CREDIT</TRNTYPE>
+						<DTPOSTED>20260829130200</DTPOSTED>
+						<TRNAMT>20.80</TRNAMT>
+						<FITID>fit-0014</FITID>
+						<MEMO>Tereza Vilela Rocha - Pix | Maquininha</MEMO>
+					</STMTTRN>
+					<STMTTRN>
+						<TRNTYPE>CREDIT</TRNTYPE>
+						<DTPOSTED>20260829125300</DTPOSTED>
+						<TRNAMT>31.69</TRNAMT>
+						<FITID>fit-0015</FITID>
+						<MEMO>Otavio Serra Pontes - Pix | Maquininha</MEMO>
+					</STMTTRN>
+				</BANKTRANLIST>
+				<LEDGERBAL>
+					<BALAMT>870.04</BALAMT>
+					<DTASOF>20260831000000[-3:BRL]</DTASOF>
+				</LEDGERBAL>
+			</STMTRS>
+		</STMTTRNRS>
+	</BANKMSGSRSV1>
+</OFX>
