@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+@layer base {
+  body {
+    @apply bg-bg font-body text-ink antialiased;
+    /* números com alinhamento tabular por padrão (livro-caixa) */
+    font-feature-settings: "tnum" 1, "lnum" 1;
+  }
+
+  /* Acessibilidade: foco de teclado sempre visível (contorno cofre). */
+  :focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(14, 124, 102, 0.28);
+    border-radius: 6px;
+  }
+}
+
+@layer components {
+  /* Elemento de assinatura: "linha de conciliação" (régua dupla de livro-caixa). */
+  .ledger-rule {
+    border: 0;
+    height: 3px;
+    background:
+      linear-gradient(#0e7c66, #0e7c66) top/100% 2px no-repeat,
+      linear-gradient(#d8e0e6, #d8e0e6) bottom/100% 1px no-repeat;
+  }
+
+  /* Fita/etiqueta de competência (mês → aba). */
+  .competence-tag {
+    @apply inline-flex items-center gap-1.5 rounded-pill bg-cofre-soft px-2.5 py-1
+      font-display text-xs font-semibold uppercase tracking-wide text-cofre;
+  }
+  .competence-tag::before {
+    content: "";
+    @apply h-1.5 w-1.5 rounded-full bg-cofre;
+  }
+
+  /* O painel recolhível (<details>) usa a própria seta, alinhada ao texto.
+     `list-style: none` basta no Firefox; o WebView2 é Chromium e precisa do
+     pseudo-elemento — sem ele, o triângulo nativo aparece ao lado do nosso. */
+  summary::-webkit-details-marker {
+    display: none;
+  }
+}
